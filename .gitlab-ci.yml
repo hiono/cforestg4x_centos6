@@ -1,0 +1,18 @@
+stages:
+  - build
+  - deploy
+
+before_script:
+  - docker login -u root -p cpusyscpusys http://localhost:5500
+  
+build_job:
+  stage: build
+  script:
+    - docker build -t localhost:5500/cforest/cforestg4x .
+
+deploy_job:
+  stage: deploy
+  script:
+    - docker push localhost:5500/cforest/cforestg4x
+  only:
+    - master
