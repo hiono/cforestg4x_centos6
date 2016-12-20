@@ -8,6 +8,7 @@ RUN yum -y install centos-release-scl
 RUN yum -y install yum-utils
 RUN yum -y install scl-utils
 RUN yum-config-manager --enable rhel-server-rhscl-6-rpms epel
+
 # RUN yum repolist # check repo
 
 RUN yum install -y --setopt=tsflags=nodocs https://www.softwarecollections.org/repos/rhscl/devtoolset-3/epel-6-x86_64/noarch/rhscl-devtoolset-3-epel-6-x86_64-1-2.noarch.rpm
@@ -21,9 +22,10 @@ RUN yum install -y --skip-broken --setopt=tsflags=nodocs devtoolset-3-binutils
 RUN yum install -y --skip-broken --setopt=tsflags=nodocs devtoolset-3-gcc
 RUN yum install -y --skip-broken --setopt=tsflags=nodocs devtoolset-3-gcc-c++
 RUN yum install -y --skip-broken --setopt=tsflags=nodocs devtoolset-3-git
-RUN yum install -y --skip-broken --setopt=tsflags=nodocs cmake-gui cmake
+RUN yum install -y --skip-broken --setopt=tsflags=nodocs cmake3-gui cmake3
 RUN yum install -y --skip-broken --setopt=tsflags=nodocs sudo
 RUN yum install -y --skip-broken --setopt=tsflags=nodocs ccache
+RUN yum install -y --skip-broken --setopt=tsflags=nodocs graphviz graphviz-devel # for pygraphviz
 
 RUN yum clean all
 
@@ -36,7 +38,7 @@ RUN source scl_source enable devtoolset-3 python27 && \
     (cd /tmp && git clone "https://github.com/danmar/cppcheck.git" && cd cppcheck && env PREFIX=/usr/local CFGDIR=/usr/local/share/cppcheck make all install && rm -rf cppcheck)
 
 RUN source scl_source enable python27 && pip install --upgrade pip
-RUN source scl_source enable python27 && pip install -U cmakelint hacking pyelftools pygraphviz csv 
+RUN source scl_source enable python27 && pip install -U cmakelint hacking pyelftools pygraphviz
 
 ENV BASH_ENV=/etc/profile.d/cont-env.sh
 
@@ -46,13 +48,12 @@ ADD ./etc /etc
 ADD ./root /root
 
 ENV HOME=/home/dev
-RUN mkdir -p /etc/sudoers.d
-RUN chown -R 1000:1000 /home/dev
+RUN mkdir -p /etc/sudoers.d /home/dev && chown -R 1000:1000 /home/dev
 RUN groupadd -r dev -f -g 1000
 RUN useradd -u 1000 -r -g dev -d ${HOME} -c "Default Application User" dev
 RUN echo dev:dev | chpasswd
 RUN echo 'dev ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/dev && chmod 0440 /etc/sudoers.d/dev
-USER 1000
+USER dev
 WORKDIR /home/dev
 
 ENTRYPOINT ["/usr/bin/container-entrypoint"]
