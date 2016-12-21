@@ -1,23 +1,11 @@
+image: docker:latest
+
 services:
   - docker:dind
 
-stages:
-  - build
-  - deploy
-
-before_script:
-  - docker login -u root -p cpusyscpusys http://localhost:5500
-  
-build_job:
-  stage:
-    - build
+build:
+  stage: build
   script:
-    - docker build -t localhost:5500/cforest/cforestg4x .
-
-deploy_job:
-  stage:
-    - deploy
-  script:
-    - docker push localhost:5500/cforest/cforestg4x
-  only:
-    - master
+    - docker login -u "gitlab-ci-token" -p "$CI_BUILD_TOKEN" $CI_REGISTRY
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME"
