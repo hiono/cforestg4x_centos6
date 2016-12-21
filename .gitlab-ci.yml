@@ -1,4 +1,5 @@
-image: docker:dind
+services:
+  - docker:dind
 
 stages:
   - build
@@ -8,12 +9,14 @@ before_script:
   - docker login -u root -p cpusyscpusys http://localhost:5500
   
 build_job:
-  stage: build
+  stage:
+    - build
   script:
     - docker build -t localhost:5500/cforest/cforestg4x .
 
 deploy_job:
-  stage: deploy
+  stage:
+    - deploy
   script:
     - docker push localhost:5500/cforest/cforestg4x
   only:
