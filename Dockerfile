@@ -27,9 +27,21 @@ RUN yum install -y --skip-broken --setopt=tsflags=nodocs python27 \
                                                          cmake3-gui cmake3 \
                                                          sudo \
                                                          ccache \
+							 curl-devel expat-devel gettext-devel openssl-devel zlib-devel perl-ExtUtils-MakeMaker \
                                                          graphviz graphviz-devel # for pygraphviz
+							 
+RUN yum remove git
 RUN yum clean all
 
+RUN source scl_source enable devtoolset-3 python27 && \
+    (cd /tmp && GITVERSION="2.12.3" && \
+                curl wget-fsSkL -o git-$GITVERSION.tar.gz https://www.kernel.org/pub/software/scm/git/git-$GITVERSION.tar.gz && \
+                tar -zxf git-$GITVERSION.tar.gz && \
+                cd git-$GITVERSION && \
+                unset GITVERSION && \
+                make prefix=/usr/local all && \
+                make prefix=/usr/local install && \
+                git --version)
 RUN source scl_source enable devtoolset-3 python27 && \
     (cd /tmp && curl -fsSkL -o gitflow-installer.sh "https://raw.github.com/petervanderdoes/gitflow/develop/contrib/gitflow-installer.sh" && bash gitflow-installer.sh install develop && rm -rf gitflow gitflow-installer.sh && curl -fsSkL -o /etc/bash_completion.d/git-flow-completion.bash "https://raw.githubusercontent.com/bobthecow/git-flow-completion/master/git-flow-completion.bash")
 RUN source scl_source enable devtoolset-3 python27 && \
