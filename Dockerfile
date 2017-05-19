@@ -27,27 +27,17 @@ RUN yum install -y --skip-broken --setopt=tsflags=nodocs python27 \
                                                          cmake3-gui cmake3 \
                                                          sudo \
                                                          ccache \
-							 curl-devel expat-devel gettext-devel openssl-devel zlib-devel perl-ExtUtils-MakeMaker \
-                                                         graphviz graphviz-devel # for pygraphviz
+                                                         rh-git29 \
+						         graphviz graphviz-devel # for pygraphviz
 							 
-RUN yum remove -y git
 RUN yum clean all
 
-RUN source scl_source enable devtoolset-3 python27 && \
-    (cd /tmp && GITVERSION="2.12.3" && \
-                curl -fsSkL -o git-$GITVERSION.tar.gz https://www.kernel.org/pub/software/scm/git/git-$GITVERSION.tar.gz && \
-                tar -zxf git-$GITVERSION.tar.gz && \
-                cd git-$GITVERSION && \
-                unset GITVERSION && \
-                make prefix=/usr/local all && \
-                make prefix=/usr/local install && \
-                git --version)
-RUN source scl_source enable devtoolset-3 python27 && \
+RUN source scl_source enable devtoolset-3 python27 rh-git29 && \
     (cd /tmp && curl -fsSkL -o gitflow-installer.sh "https://raw.github.com/petervanderdoes/gitflow/develop/contrib/gitflow-installer.sh" && bash gitflow-installer.sh install develop && rm -rf gitflow gitflow-installer.sh && curl -fsSkL -o /etc/bash_completion.d/git-flow-completion.bash "https://raw.githubusercontent.com/bobthecow/git-flow-completion/master/git-flow-completion.bash")
-RUN source scl_source enable devtoolset-3 python27 && \
+RUN source scl_source enable devtoolset-3 python27 rh-git29 && \
     (cd /tmp && git clone "https://github.com/tj/git-extras.git" && cd git-extras && git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) && make install && rm -rf /tmp/git-extras)
 
-RUN source scl_source enable devtoolset-3 python27 && \
+RUN source scl_source enable devtoolset-3 python27 rh-git29 && \
     (cd /tmp && git clone "https://github.com/danmar/cppcheck.git" && cd cppcheck && env PREFIX=/usr/local CFGDIR=/usr/local/share/cppcheck make all install && rm -rf cppcheck)
 
 RUN source scl_source enable python27 && pip install --upgrade pip
