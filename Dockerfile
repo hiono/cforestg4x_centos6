@@ -23,13 +23,11 @@ RUN yum install -y --skip-broken --setopt=tsflags=nodocs python27 \
                                                          devtoolset-3-binutils \
                                                          devtoolset-3-gcc \
                                                          devtoolset-3-gcc-c++ \
-                                                         devtoolset-3-git \
                                                          cmake3-gui cmake3 \
                                                          sudo \
                                                          ccache \
                                                          rh-git29 \
 						         graphviz graphviz-devel # for pygraphviz
-							 
 RUN yum clean all
 
 RUN source scl_source enable devtoolset-3 python27 rh-git29 && \
