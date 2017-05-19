@@ -30,12 +30,12 @@ RUN yum install -y --skip-broken --setopt=tsflags=nodocs python27 \
 							 curl-devel expat-devel gettext-devel openssl-devel zlib-devel perl-ExtUtils-MakeMaker \
                                                          graphviz graphviz-devel # for pygraphviz
 							 
-RUN yum remove git
+RUN yum remove -y git
 RUN yum clean all
 
 RUN source scl_source enable devtoolset-3 python27 && \
     (cd /tmp && GITVERSION="2.12.3" && \
-                curl wget-fsSkL -o git-$GITVERSION.tar.gz https://www.kernel.org/pub/software/scm/git/git-$GITVERSION.tar.gz && \
+                curl -fsSkL -o git-$GITVERSION.tar.gz https://www.kernel.org/pub/software/scm/git/git-$GITVERSION.tar.gz && \
                 tar -zxf git-$GITVERSION.tar.gz && \
                 cd git-$GITVERSION && \
                 unset GITVERSION && \
