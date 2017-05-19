@@ -11,7 +11,8 @@ RUN yum-config-manager --enable rhel-server-rhscl-6-rpms epel
 
 # RUN yum repolist # check repo
 
-RUN yum install -y --setopt=tsflags=nodocs https://www.softwarecollections.org/repos/rhscl/devtoolset-3/epel-6-x86_64/noarch/rhscl-devtoolset-3-epel-6-x86_64-1-2.noarch.rpm
+# RUN yum install -y --setopt=tsflags=nodocs https://www.softwarecollections.org/repos/rhscl/devtoolset-3/epel-6-x86_64/noarch/rhscl-devtoolset-3-epel-6-x86_64-1-2.noarch.rpm
+RUN yum install -y --setopt=tsflags=nodocs https://copr.fedorainfracloud.org/coprs/rhscl/devtoolset-3/repo/epel-6/rhscl-devtoolset-3-epel-6.repo
 RUN yum update  -y
 RUN yum groupinstall 'Development tools' -y
 RUN yum install -y --skip-broken --setopt=tsflags=nodocs python27
